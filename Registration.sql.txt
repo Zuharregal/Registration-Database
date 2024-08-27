@@ -1,0 +1,467 @@
+DROP TABLE o_studentsubject cascade constraints;
+DROP TABLE o_studentcourse cascade constraints;
+DROP TABLE o_result cascade constraints;
+DROP TABLE o_registration cascade constraints;
+DROP TABLE o_payment cascade constraints;
+DROP TABLE o_advisor cascade constraints;
+DROP TABLE o_advisingapp cascade constraints;
+DROP TABLE o_lecturer cascade constraints;
+DROP TABLE o_coursesubject cascade constraints;
+DROP TABLE o_course cascade constraints;
+DROP TABLE o_subject cascade constraints;
+DROP TABLE o_department cascade constraints;
+DROP TABLE o_faculty cascade constraints;
+DROP TABLE o_student cascade constraints;
+DROP SEQUENCE o_faculty_seq;
+DROP SEQUENCE o_department_seq;
+DROP SEQUENCE o_subject_seq;
+DROP SEQUENCE o_course_seq;
+DROP SEQUENCE o_lecturer_seq;
+DROP SEQUENCE o_coursesubject_seq;
+DROP SEQUENCE o_student_seq;
+DROP SEQUENCE o_advisingapp_seq;
+DROP SEQUENCE o_advisor_seq;
+DROP SEQUENCE o_payment_seq;
+DROP SEQUENCE o_registration_seq;
+DROP SEQUENCE o_studentsubject_seq;
+DROP SEQUENCE o_studentcourse_seq;
+DROP SEQUENCE o_result_seq;
+
+-- FACULTY
+CREATE TABLE o_faculty (
+  facultyid NUMBER(6) NOT NULL,
+  fname VARCHAR2(50),
+  CONSTRAINT o_faculty_facultyid_pk PRIMARY KEY (facultyid)
+);
+INSERT INTO o_faculty (facultyid, fname) VALUES (1, 'Arts and Humanities');
+INSERT INTO o_faculty (facultyid, fname) VALUES (2, 'Community and Health Science');
+INSERT INTO o_faculty (facultyid, fname) VALUES (3, 'Dentistry');
+INSERT INTO o_faculty (facultyid, fname) VALUES (4, 'Economics and Management Science');
+INSERT INTO o_faculty (facultyid, fname) VALUES (5, 'Education');
+INSERT INTO o_faculty (facultyid, fname) VALUES (6, 'Law');
+INSERT INTO o_faculty (facultyid, fname) VALUES (7, 'Natural Science');
+
+-- DEPARTMENT
+CREATE TABLE o_department (
+  deptid NUMBER(6) NOT NULL,
+  dname VARCHAR2(50),
+  facultyid NUMBER(6) NOT NULL,
+  CONSTRAINT o_department_deptid_pk PRIMARY KEY (deptid),
+  CONSTRAINT o_department_facultyid_fk FOREIGN KEY (facultyid) REFERENCES o_faculty(facultyid)
+);
+INSERT INTO o_department (deptid, dname, facultyid) VALUES (1, 'Philosophy', 1);
+INSERT INTO o_department (deptid, dname, facultyid) VALUES (2, 'Sociology', 1);
+INSERT INTO o_department (deptid, dname, facultyid) VALUES (3, 'Occupational Therapy', 2);
+INSERT INTO o_department (deptid, dname, facultyid) VALUES (4, 'Physiotherapy', 2);
+INSERT INTO o_department (deptid, dname, facultyid) VALUES (5, 'Oral Hygiene', 3);
+INSERT INTO o_department (deptid, dname, facultyid) VALUES (6, 'Accounting', 4);
+INSERT INTO o_department (deptid, dname, facultyid) VALUES (7, 'Economics', 4);
+INSERT INTO o_department (deptid, dname, facultyid) VALUES (8, 'Educational Psychology', 5);
+INSERT INTO o_department (deptid, dname, facultyid) VALUES (9, 'Private Law', 6);
+INSERT INTO o_department (deptid, dname, facultyid) VALUES (10, 'Computer Science', 7);
+
+-- SUBJECT 
+CREATE TABLE o_subject (
+	subjectid NUMBER(6) NOT NULL,
+	subjectname VARCHAR2(40),
+	subjectcode VARCHAR2(6) NOT NULL,
+ 	CONSTRAINT O_SUBJECT_SUBJECTID_PK PRIMARY KEY (SUBJECTID));
+
+	INSERT INTO o_subject VALUES (1, 'INTRODUCTION TO PHILOSOPHY 111', 'PHI111');
+	INSERT INTO o_subject VALUES (2, 'INTRODUCTION TO SOCIALOGY 151', 'SOC151');
+	INSERT INTO o_subject VALUES (3, 'INTRODUCTION TO OCCUPATIONAL THERAPY 118', 'OCT118');
+	INSERT INTO o_subject VALUES (4, 'PHYSIOTHERAPY TECHNIQUES 100', 'PHT100');
+	INSERT INTO o_subject VALUES (5, 'ORAL DISEASE 120', 'ODS120');
+	INSERT INTO o_subject VALUES (6, 'FINANCIAL ACCOUNTING 131', 'FIA131');
+	INSERT INTO o_subject VALUES (7, 'BASIC ECONOMETRICS 242', 'ECO242');
+	INSERT INTO o_subject VALUES (8, 'COUNSELLING THEORY 710', 'BED710');
+	INSERT INTO o_subject VALUES (9, 'LAND LAW 431', 'LLW431');
+	INSERT INTO o_subject VALUES (10, 'COMPUTING FUNDAMENTALS 114', 'COS114');
+
+-- COURSE 
+CREATE TABLE o_course (
+	courseid NUMBER(6) NOT NULL,
+	coursename VARCHAR2(30),
+	deptid NUMBER(6) NOT NULL,
+	CONSTRAINT O_COURSE_DEPTID_FK FOREIGN KEY (DEPTID) REFERENCES O_DEPARTMENT (DEPTID),
+ 	CONSTRAINT O_COURSE_COURSEID_PK PRIMARY KEY (COURSEID));
+
+	INSERT INTO o_course VALUES (1, 'BA', 1);
+	INSERT INTO o_course VALUES (2, 'BA', 2);
+	INSERT INTO o_course VALUES (3, 'BSc (Occupational Therapy)', 3);
+	INSERT INTO o_course VALUES (4, 'BSc (Physiotherapy)', 4);
+	INSERT INTO o_course VALUES (5, 'BOral Health', 5);
+	INSERT INTO o_course VALUES (6, 'BCom Accounting', 6);
+	INSERT INTO o_course VALUES (7, 'BCom', 7);
+	INSERT INTO o_course VALUES (8, 'BEd Hons', 8);
+	INSERT INTO o_course VALUES (9, 'LLB', 9);
+	INSERT INTO o_course VALUES (10, 'BSc (Computer Science)', 10);
+
+-- LECTURER
+CREATE TABLE o_lecturer (
+  lecturerid NUMBER(6) NOT NULL,
+  l_name VARCHAR2(20),
+  l_lastname VARCHAR2(20),
+  l_email VARCHAR2(50),
+  subjectid NUMBER(6) NOT NULL,
+  deptid NUMBER(6) NOT NULL,
+  CONSTRAINT o_lecturer_lecturerid_pk PRIMARY KEY (lecturerid),
+  CONSTRAINT o_lecturer_subjectid_fk FOREIGN KEY (subjectid) REFERENCES o_subject(subjectid),
+  CONSTRAINT o_lecturer_deptid_fk FOREIGN KEY (deptid) REFERENCES o_department(deptid)
+);
+INSERT INTO o_lecturer (lecturerid, l_name, l_email, subjectid, deptid) VALUES
+(1, 'Simon Beck', 'sbeck@uwc.ac.za', 1, 1);
+INSERT INTO o_lecturer (lecturerid, l_name, l_email, subjectid, deptid) VALUES
+(2, 'Marelize Rabe', 'mrabe@uwc.ac.za', 2, 2);
+INSERT INTO o_lecturer (lecturerid, l_name, l_email, subjectid, deptid) VALUES
+(3, 'Taryn du Toit', 'tdutoit@uwc.ac.za', 3, 3);
+INSERT INTO o_lecturer (lecturerid, l_name, l_email, subjectid, deptid) VALUES
+(4, 'Danelle Hess', 'dhess@uwc.ac.za', 4, 4);
+INSERT INTO o_lecturer (lecturerid, l_name, l_email, subjectid, deptid) VALUES
+(5, 'Dirk Smit', 'dsmit@uwc.ac.za', 5, 5);
+INSERT INTO o_lecturer (lecturerid, l_name, l_email, subjectid, deptid) VALUES
+(6, 'Faryll Singh', 'fsingh@uwc.ac.za', 6, 6);
+INSERT INTO o_lecturer (lecturerid, l_name, l_email, subjectid, deptid) VALUES
+(7, 'Mariana Moses', 'mmoses@uwc.ac.za', 7, 7);
+INSERT INTO o_lecturer (lecturerid, l_name, l_email, subjectid, deptid) VALUES
+(8, 'Karen Collett', 'kcollet@uwc.ac.za', 8, 8);
+INSERT INTO o_lecturer (lecturerid, l_name, l_email, subjectid, deptid) VALUES
+(9, 'Ashraf Booley', 'abooley@uwc.ac.za', 9, 9);
+INSERT INTO o_lecturer (lecturerid, l_name, l_email, subjectid, deptid) VALUES
+(10, 'Mehrdad Ghaziasgar', 'mghaziasgar@uwc.ac.za', 10, 10);
+
+--COURSESUBJECT
+CREATE TABLE o_coursesubject (
+	coursesubjectid NUMBER(6) NOT NULL,
+	courseid NUMBER(6) NOT NULL,
+	subjectid NUMBER(6) NOT NULL,
+	CONSTRAINT O_COURSESUBJECT_COURSEID_FK FOREIGN KEY (COURSEID) REFERENCES O_COURSE (COURSEID),
+	CONSTRAINT O_COURSESUBJECT_SUBJECTID_FK FOREIGN KEY (SUBJECTID) REFERENCES O_SUBJECT (SUBJECTID),
+ 	CONSTRAINT PK_COURSESUBJECT PRIMARY KEY (COURSESUBJECTID));
+
+	INSERT INTO o_coursesubject VALUES (1, 1, 1);
+	INSERT INTO o_coursesubject VALUES (2, 2, 2);
+	INSERT INTO o_coursesubject VALUES (3, 3, 3);
+	INSERT INTO o_coursesubject VALUES (4, 4, 4);
+	INSERT INTO o_coursesubject VALUES (5, 5, 5);
+	INSERT INTO o_coursesubject VALUES (6, 6, 6);
+	INSERT INTO o_coursesubject VALUES (7, 7, 7);
+	INSERT INTO o_coursesubject VALUES (8, 8, 8);
+	INSERT INTO o_coursesubject VALUES (9, 9, 9);
+	INSERT INTO o_coursesubject VALUES (10, 10, 10);
+
+-- STUDENT
+CREATE TABLE o_student(
+studentid NUMBER(6) NOT NULL,
+s_name VARCHAR2(50),
+s_lastname VARCHAR2(50),
+s_email VARCHAR2(100),
+s_gender CHAR(1),
+s_date_of_birth DATE,
+s_address VARCHAR2(200),
+s_city VARCHAR2(50),
+s_emergency_contact VARCHAR2(12),
+s_phone VARCHAR2(12),
+CONSTRAINT o_student_studentid_pk PRIMARY KEY(studentid));
+
+INSERT INTO o_student(studentid, s_name, s_lastname, s_email, s_gender, s_date_of_birth, s_address, s_city, s_emergency_contact, s_phone)
+VALUES(1, 'Joy', 'Pringle', 'jmilner@gmail.com', 'F', TO_DATE('2003-01-25', 'YYYY-MM-DD'), '12 Milnerton Rd, Cape Town, 7441', 'Cape Town', '081 072 4231', '071 084 5679');
+INSERT INTO o_student(studentid, s_name, s_lastname, s_email, s_gender, s_date_of_birth, s_address, s_city, s_emergency_contact, s_phone)
+VALUES(2, 'Faith', 'Milner', 'fmilner@gmail.com', 'F', TO_DATE('2002-03-21', 'YYYY-MM-DD'), '7 Florence Str, Cape Town, 8005', 'Cape Town', '082 431 2589', '072 803 2467');
+INSERT INTO o_student(studentid, s_name, s_lastname, s_email, s_gender, s_date_of_birth, s_address, s_city, s_emergency_contact, s_phone)
+VALUES(3, 'Mike', 'Winger', 'mwinger@gmail.com', 'M', TO_DATE('1999-08-13', 'YYYY-MM-DD'), '12 Jireh Dr, Randburg, 1700', 'Johannesburg', '078 520 8771', '089 427 8744');
+INSERT INTO o_student(studentid, s_name, s_lastname, s_email, s_gender, s_date_of_birth, s_address, s_city, s_emergency_contact, s_phone)
+VALUES(4, 'John', 'Adams', 'jadams@gmail.com', 'M', TO_DATE('1999-09-27', 'YYYY-MM-DD'), '7 Jerusalem Dr, Randburg, 1700', 'Johannesburg', '087 425 8771', '067 890 2441');
+INSERT INTO o_student(studentid, s_name, s_lastname, s_email, s_gender, s_date_of_birth, s_address, s_city, s_emergency_contact, s_phone)
+VALUES(5, 'Janae', 'Aidley', 'jaidley@gmail.com', 'F', TO_DATE('2001-10-21', 'YYYY-MM-DD'), '14 Mandela Dr, Emalahleni, 1035', 'Witbank', '071 250 7830', '068 742 5690');
+INSERT INTO o_student(studentid, s_name, s_lastname, s_email, s_gender, s_date_of_birth, s_address, s_city, s_emergency_contact, s_phone)
+VALUES(6, 'Lindiwe', 'Gumede', 'lgumede@gmail.com', 'F', TO_DATE('2002-11-30', 'YYYY-MM-DD'), '8 Sceva Culd De Sec, Emalahleni, 1035', 'Witbank', '081 250 7891', '066 781 7289');
+INSERT INTO o_student(studentid, s_name, s_lastname, s_email, s_gender, s_date_of_birth, s_address, s_city, s_emergency_contact, s_phone)
+VALUES(7, 'Khodani', 'Phadziri', 'kphadziri@gmail.com', 'F', TO_DATE('2004-07-25', 'YYYY-MM-DD'), '112 Jane Paldrow Str, Andrus, 9031', 'Bloemfontein', '079 831 4290', '087 731 7754');
+INSERT INTO o_student(studentid, s_name, s_lastname, s_email, s_gender, s_date_of_birth, s_address, s_city, s_emergency_contact, s_phone)
+VALUES(8, 'Jonathan', 'Wilds', 'jwilds@gmail.com', 'M', TO_DATE('2000-11-27', 'YYYY-MM-DD'), '15 Hope Str, Bloemfontein, 9301', 'Bloemfontein', '082 325 2479', '085 250 2771');
+INSERT INTO o_student(studentid, s_name, s_lastname, s_email, s_gender, s_date_of_birth, s_address, s_city, s_emergency_contact, s_phone)
+VALUES(9, 'Haley', 'Mckenzie', 'hmckenzie@gmail.com', 'F', TO_DATE('2000-08-13', 'YYYY-MM-DD'), '330 Mason Dr, Durbanville, 7550', 'Cape Town', '079 431 5570', '082 450 4571');
+INSERT INTO o_student(studentid, s_name, s_lastname, s_email, s_gender, s_date_of_birth, s_address, s_city, s_emergency_contact, s_phone)
+VALUES(10, 'Rebecca', 'Maruleng', 'rmaruleng@gmail.com', 'F', TO_DATE('2001-06-14', 'YYYY-MM-DD'), '21 Samson Ave, Milnerton, 7441', 'Cape Town', '072 431 5580', '082 433 2590');
+
+-- ADVISING APPOINTMENT 
+CREATE TABLE o_advisingapp (
+appid NUMBER(6) NOT NULL,
+studentid NUMBER(6) NOT NULL,
+appdate DATE,
+apptime VARCHAR2(10),
+applocation VARCHAR2(25),
+CONSTRAINT o_advising_appid_pk PRIMARY KEY (appid),
+CONSTRAINT o_advising_studentid_fk FOREIGN KEY (studentid)
+REFERENCES o_student(studentid)
+);
+INSERT INTO o_advisingapp(appid ,studentid ,appdate ,apptime ,applocation)
+VALUES (1, 1, TO_DATE('2023-02-05', 'YYYY-MM-DD'), '12:15', 'Meeting room 1');
+INSERT INTO o_advisingapp(appid ,studentid ,appdate ,apptime ,applocation)
+VALUES (2, 2, TO_DATE('2023-02-05', 'YYYY-MM-DD'), '10:30', 'Meeting room 1');
+INSERT INTO o_advisingapp(appid ,studentid ,appdate ,apptime ,applocation)
+VALUES (3, 3, TO_DATE('2023-02-05', 'YYYY-MM-DD'), '11:15', 'Meeting room 2');
+INSERT INTO o_advisingapp(appid ,studentid ,appdate ,apptime ,applocation)
+VALUES (4, 4, TO_DATE('2023-02-05', 'YYYY-MM-DD'), '09:30', 'Meeting room 2');
+INSERT INTO o_advisingapp(appid ,studentid ,appdate ,apptime ,applocation)
+VALUES (5, 5, TO_DATE('2023-02-05', 'YYYY-MM-DD'), '13:30', 'Meeting room 3');
+INSERT INTO o_advisingapp(appid ,studentid ,appdate ,apptime ,applocation)
+VALUES (6, 6, TO_DATE('2023-02-05', 'YYYY-MM-DD'), '12:15', 'Meeting room 1');
+INSERT INTO o_advisingapp(appid ,studentid ,appdate ,apptime ,applocation)
+VALUES (7, 7, TO_DATE('2023-02-05', 'YYYY-MM-DD'), '10:30', 'Meeting room 1');
+INSERT INTO o_advisingapp(appid ,studentid ,appdate ,apptime ,applocation)
+VALUES (8, 8, TO_DATE('2023-02-05', 'YYYY-MM-DD'), '11:15', 'Meeting room 2');
+INSERT INTO o_advisingapp(appid ,studentid ,appdate ,apptime ,applocation)
+VALUES (9, 9, TO_DATE('2023-02-05', 'YYYY-MM-DD'), '09:30', 'Meeting room 2');
+INSERT INTO o_advisingapp(appid ,studentid ,appdate ,apptime ,applocation)
+VALUES (10, 10, TO_DATE('2023-02-05', 'YYYY-MM-DD'), '13:30', 'Meeting room 3');
+
+
+-- ADVISOR
+CREATE TABLE o_advisor (
+advtid NUMBER(6) NOT NULL,
+advname VARCHAR2(20),
+advsurname VARCHAR2(20),
+advemail VARCHAR2(25),
+advphone VARCHAR2(25),
+appid NUMBER(6) NOT NULL, 
+CONSTRAINT o_advisor_advtid_pk PRIMARY KEY (advtid),
+CONSTRAINT o_advisor_appid_fk FOREIGN KEY (appid)
+REFERENCES o_advisingapp(appid)
+);
+
+INSERT INTO o_advisor ( advtid, advname, advsurname, advemail ,advphone , appid ) VALUES ( 1, 'Merriam', 'Pillay', 'mpillay@uwc.ac.za', 0714625334, 1);
+INSERT INTO o_advisor ( advtid, advname, advsurname, advemail ,advphone , appid ) VALUES ( 2, 'Sipho', 'Gumede', 'sgumede@uwc.ac.za', 0868314646, 3);
+INSERT INTO o_advisor ( advtid, advname, advsurname, advemail ,advphone , appid ) VALUES ( 3, 'Nthabeleng', 'Maseko', 'mmaseko@uwc.ac.za', 0728054618, 8);
+INSERT INTO o_advisor ( advtid, advname, advsurname, advemail ,advphone , appid ) VALUES ( 4, 'William', 'Jacobs', 'wjacobs@uwc.ac.za', 0715225334, 4);
+INSERT INTO o_advisor ( advtid, advname, advsurname, advemail ,advphone , appid ) VALUES ( 5, 'Samantha', 'Louw', 'slouw@uwc.ac.za', 0831764986, 7);
+INSERT INTO o_advisor ( advtid, advname, advsurname, advemail ,advphone , appid ) VALUES ( 6, 'Jason', 'Potgieter', 'jpotgieter@uwc.ac.za', 0863339194, 10);
+INSERT INTO o_advisor ( advtid, advname, advsurname, advemail ,advphone , appid ) VALUES ( 7, 'Oliver', 'Muller', 'omuller@uwc.ac.za', 0729875486, 5);
+INSERT INTO o_advisor ( advtid, advname, advsurname, advemail ,advphone , appid )VALUES ( 8, 'Funanani', 'Mulaudzi', 'fmulaudzi@uwc.ac.za', 0826614667, 2);
+INSERT INTO o_advisor ( advtid, advname, advsurname, advemail ,advphone , appid )VALUES ( 9, 'Estelle', 'Maart', 'emaart@uwc.ac.za', 0671625882, 6);
+INSERT INTO o_advisor ( advtid, advname, advsurname, advemail ,advphone , appid )VALUES ( 10, 'Lincon', 'Sebeko', 'lsebeko@uwc.ac.za', 0874625904, 9);
+
+-- PAYMENT 
+CREATE TABLE o_payment (
+payid NUMBER(6) NOT NULL,
+payamount NUMBER,
+paydate DATE,
+paymethod VARCHAR2(20),
+paybranch VARCHAR2(25),
+CONSTRAINT o_payment_payid_pk PRIMARY KEY (payid)
+);
+INSERT INTO o_payment (payid, payamount, paydate, paymethod, paybranch) 
+VALUES (1, 29100, TO_DATE('2023-07-22', 'YYYY-MM-DD'), 'debit card', 'Standard bank');
+INSERT INTO o_payment (payid, payamount, paydate, paymethod, paybranch) 
+VALUES (2, 33400, TO_DATE('2023-02-04', 'YYYY-MM-DD'), 'credit card', 'Absa bank'); 
+INSERT INTO o_payment (payid, payamount, paydate, paymethod, paybranch) 
+VALUES (3, 33400, TO_DATE('2023-04-12', 'YYYY-MM-DD'), 'debit card', 'FNB bank');
+INSERT INTO o_payment (payid, payamount, paydate, paymethod, paybranch) 
+VALUES (4, 42700, TO_DATE('2023-06-01', 'YYYY-MM-DD'), 'credit card', 'TYME bank');
+INSERT INTO o_payment (payid, payamount, paydate, paymethod, paybranch) 
+VALUES (5, 36000, TO_DATE('2023-09-25', 'YYYY-MM-DD'), 'credit card', 'Nedbank bank');
+INSERT INTO o_payment (payid, payamount, paydate, paymethod, paybranch) 
+VALUES (6, 36000, TO_DATE('2023-05-22', 'YYYY-MM-DD'), 'debit card', 'FNB bank');
+INSERT INTO o_payment (payid, payamount, paydate, paymethod, paybranch) 
+VALUES (7, 30500, TO_DATE('2023-05-22', 'YYYY-MM-DD'), 'credit card', 'ABSA bank');
+INSERT INTO o_payment (payid, payamount, paydate, paymethod, paybranch) 
+VALUES (8, 38600, TO_DATE('2023-07-28', 'YYYY-MM-DD'), 'debit card', 'FirstRand bank');
+INSERT INTO o_payment (payid, payamount, paydate, paymethod, paybranch) 
+VALUES (9, 40810, TO_DATE('2023-09-15', 'YYYY-MM-DD'), 'debit card', 'Standard bank');
+INSERT INTO o_payment (payid, payamount, paydate, paymethod, paybranch) 
+VALUES (10, 40810, TO_DATE('2023-09-25', 'YYYY-MM-DD'), 'credit card', 'Capitec bank');
+
+
+
+
+-- REGISTRATION 
+CREATE TABLE o_registration (
+  regid NUMBER(6) NOT NULL,
+  regdate DATE,
+  regstatus VARCHAR2(20),
+  regfees NUMBER(7,2),
+  studentid NUMBER(6) NOT NULL,
+  courseid NUMBER(6) NOT NULL,
+  subjectid NUMBER(6) NOT NULL,
+  deptid NUMBER(6) NOT NULL,
+  facultyid NUMBER(6) NOT NULL,
+  payid NUMBER(6) NOT NULL,
+  appid NUMBER(6) NOT NULL,
+  CONSTRAINT o_registration_regid_pk PRIMARY KEY (regid),
+  CONSTRAINT o_registration_studentid_fk FOREIGN KEY (studentid) REFERENCES o_student(studentid),
+  CONSTRAINT o_registration_courseid_fk FOREIGN KEY (courseid) REFERENCES o_course(courseid),
+  CONSTRAINT o_registration_subjectid_fk FOREIGN KEY (courseid) REFERENCES o_subject(subjectid),
+  CONSTRAINT o_registration_deptid_fk FOREIGN KEY (deptid) REFERENCES o_department(deptid),
+  CONSTRAINT o_registration_facultyid_fk FOREIGN KEY (facultyid) REFERENCES o_faculty(facultyid),
+  CONSTRAINT o_registration_payid_fk FOREIGN KEY (payid) REFERENCES o_payment(payid),
+  CONSTRAINT o_registration_appid_fk FOREIGN KEY (appid) REFERENCES o_advisingapp(appid)
+);
+INSERT INTO o_registration (regid, regdate, regstatus, regfees, studentid, courseid, deptid, facultyid, payid, appid,subjectid)
+VALUES (1, TO_DATE('2023-01-15', 'YYYY-MM-DD'), 'Registered', 1500.00, 1, 1, 1, 1, 1, 1, 1);
+INSERT INTO o_registration (regid, regdate, regstatus, regfees, studentid, courseid, deptid, facultyid, payid, appid,subjectid)
+VALUES (2, TO_DATE('2023-02-05', 'YYYY-MM-DD'), 'Pending', 1500.00, 2, 2, 2, 2, 2, 2, 2);
+INSERT INTO o_registration (regid, regdate, regstatus, regfees, studentid, courseid, deptid, facultyid, payid, appid,subjectid)
+VALUES (3, TO_DATE('2023-01-20', 'YYYY-MM-DD'), 'Registered', 1500.00, 3, 3, 3, 2, 3, 3, 3);
+INSERT INTO o_registration (regid, regdate, regstatus, regfees, studentid, courseid, deptid, facultyid, payid, appid,subjectid)
+VALUES (4, TO_DATE('2023-02-10', 'YYYY-MM-DD'), 'Registered', 1500.00, 4, 4, 4, 3, 4, 4, 4);
+INSERT INTO o_registration (regid, regdate, regstatus, regfees, studentid, courseid, deptid, facultyid, payid, appid,subjectid)
+VALUES (5, TO_DATE('2023-01-25', 'YYYY-MM-DD'), 'Pending', 1500.00, 5, 5, 5, 4, 5, 5, 5);
+INSERT INTO o_registration (regid, regdate, regstatus, regfees, studentid, courseid, deptid, facultyid, payid, appid,subjectid)
+VALUES (6, TO_DATE('2023-02-05', 'YYYY-MM-DD'), 'Registered', 1500.00, 6,  6, 6, 4, 6, 6, 6);
+INSERT INTO o_registration (regid, regdate, regstatus, regfees, studentid, courseid, deptid, facultyid, payid, appid,subjectid)
+VALUES (7, TO_DATE('2023-01-30', 'YYYY-MM-DD'), 'Registered', 1500.00, 7,  7, 7, 5, 7, 7, 7);
+INSERT INTO o_registration (regid, regdate, regstatus, regfees, studentid, courseid, deptid, facultyid, payid, appid,subjectid)
+VALUES (8, TO_DATE('2023-02-10', 'YYYY-MM-DD'), 'Pending', 1500.00, 8,  8, 8, 6, 8, 8, 8);
+INSERT INTO o_registration (regid, regdate, regstatus, regfees, studentid, courseid, deptid, facultyid, payid, appid,subjectid)
+VALUES (9, TO_DATE('2023-01-30', 'YYYY-MM-DD'), 'Registered', 1500.00, 9, 9, 9, 7, 9, 9, 9);
+INSERT INTO o_registration (regid, regdate, regstatus, regfees, studentid, courseid, deptid, facultyid, payid, appid,subjectid)
+VALUES (10, TO_DATE('2023-02-10', 'YYYY-MM-DD'), 'Pending', 1500.00, 10, 10, 10, 7, 10, 10, 10);
+
+
+-- STUDENT SUBJECT
+CREATE TABLE o_studentsubject (
+studentid NUMBER(6) NOT NULL,
+ subjectid NUMBER(6) NOT NULL,
+CONSTRAINT o_studentsubject_studentid_fk FOREIGN KEY (studentid) REFERENCES o_student(studentid),
+CONSTRAINT o_studentsubject_subjectid_fk FOREIGN KEY (subjectid) REFERENCES o_subject(subjectid)
+);
+INSERT INTO o_studentsubject(studentid, subjectid) VALUES(1, 1);
+INSERT INTO o_studentsubject(studentid, subjectid) VALUES(2, 2);
+INSERT INTO o_studentsubject(studentid, subjectid) VALUES(3, 3);
+INSERT INTO o_studentsubject(studentid, subjectid) VALUES(4, 4);
+INSERT INTO o_studentsubject(studentid, subjectid) VALUES(5, 5);
+INSERT INTO o_studentsubject(studentid, subjectid) VALUES(6, 6);
+INSERT INTO o_studentsubject(studentid, subjectid) VALUES(7, 7);
+INSERT INTO o_studentsubject(studentid, subjectid) VALUES(8, 8);
+INSERT INTO o_studentsubject(studentid, subjectid) VALUES(9, 9);
+INSERT INTO o_studentsubject(studentid, subjectid) VALUES(10, 10);
+
+-- STUDENT COURSE
+CREATE TABLE o_studentcourse(
+studentid NUMBER(6) NOT NULL,
+courseid NUMBER(6) NOT NULL,
+CONSTRAINT o_studentcourse_studentid_fk FOREIGN KEY (studentid) REFERENCES o_student(studentid),
+CONSTRAINT o_studentcourse_courseid_fk FOREIGN KEY (courseid)REFERENCES o_course(courseid)
+);
+INSERT INTO o_studentcourse(studentid, courseid) VALUES(1, 1);
+INSERT INTO o_studentcourse(studentid, courseid) VALUES(2, 2);
+INSERT INTO o_studentcourse(studentid, courseid) VALUES(3, 3);
+INSERT INTO o_studentcourse(studentid, courseid) VALUES(4, 4);
+INSERT INTO o_studentcourse(studentid, courseid) VALUES(5, 5);
+INSERT INTO o_studentcourse(studentid, courseid) VALUES(6, 6);
+INSERT INTO o_studentcourse(studentid, courseid) VALUES(7, 7);
+INSERT INTO o_studentcourse(studentid, courseid) VALUES(8, 8);
+INSERT INTO o_studentcourse(studentid, courseid) VALUES(9, 9);
+INSERT INTO o_studentcourse(studentid, courseid) VALUES(10, 10);
+
+
+-- RESULT
+CREATE TABLE o_result(
+pastresultid NUMBER(6) NOT NULL,
+studentid NUMBER(6) NOT NULL,
+courseid NUMBER(6) NOT NULL,
+course_mark VARCHAR2(4),
+CONSTRAINT o_results_pastresultid_pk PRIMARY KEY(pastresultid),
+CONSTRAINT o_results_studentid_fk FOREIGN KEY(studentid)
+REFERENCES o_student(studentid),
+CONSTRAINT o_results_courseid_fk FOREIGN KEY(courseid)
+REFERENCES o_course(courseid)
+);
+INSERT INTO o_result(pastresultid, studentid, courseid, course_mark) VALUES(1, 1, 2, '55%');
+INSERT INTO o_result(pastresultid, studentid, courseid, course_mark) VALUES(2, 2, 4, '74%');
+INSERT INTO o_result(pastresultid, studentid, courseid, course_mark) VALUES(3, 3, 5, '85%');
+INSERT INTO o_result(pastresultid, studentid, courseid, course_mark) VALUES(4, 4, 6, '78%');
+INSERT INTO o_result(pastresultid, studentid, courseid, course_mark) VALUES(5, 5, 8, '60%');
+INSERT INTO o_result(pastresultid, studentid, courseid, course_mark) VALUES(6, 6, 9, '65%');
+INSERT INTO o_result(pastresultid, studentid, courseid, course_mark) VALUES(7, 7, 8, '55%');
+INSERT INTO o_result(pastresultid, studentid, courseid, course_mark) VALUES(8, 8, 10, '70%' );
+INSERT INTO o_result(pastresultid, studentid, courseid, course_mark) VALUES(9, 9, 1, '62%');
+INSERT INTO o_result(pastresultid, studentid, courseid, course_mark) VALUES(10, 10, 3, '67%');
+
+-- Sequence for o_faculty
+CREATE SEQUENCE o_faculty_seq
+  START WITH 11
+  INCREMENT BY 1
+  NOCACHE;
+
+-- Sequence for o_department
+CREATE SEQUENCE o_department_seq
+  START WITH 11
+  INCREMENT BY 1
+  NOCACHE;
+
+-- Sequence for o_subject
+CREATE SEQUENCE o_subject_seq
+  START WITH 11
+  INCREMENT BY 1
+  NOCACHE;
+
+-- Sequence for o_course
+CREATE SEQUENCE o_course_seq
+  START WITH 11
+  INCREMENT BY 1
+  NOCACHE;
+
+-- Sequence for o_lecturer
+CREATE SEQUENCE o_lecturer_seq
+  START WITH 11
+  INCREMENT BY 1
+  NOCACHE;
+
+-- Sequence for o_coursesubject
+CREATE SEQUENCE o_coursesubject_seq
+  START WITH 11
+  INCREMENT BY 1
+  NOCACHE;
+
+-- Sequence for o_student
+CREATE SEQUENCE o_student_seq
+  START WITH 11
+  INCREMENT BY 1
+  NOCACHE;
+
+-- Sequence for o_advisingapp
+CREATE SEQUENCE o_advisingapp_seq
+  START WITH 11
+  INCREMENT BY 1
+  NOCACHE;
+
+-- Sequence for o_advisor
+CREATE SEQUENCE o_advisor_seq
+  START WITH 11
+  INCREMENT BY 1
+  NOCACHE;
+
+-- Sequence for o_payment
+CREATE SEQUENCE o_payment_seq
+  START WITH 11
+  INCREMENT BY 1
+  NOCACHE;
+
+-- Sequence for o_registration
+CREATE SEQUENCE o_registration_seq
+  START WITH 11
+  INCREMENT BY 1
+  NOCACHE;
+
+-- Sequence for o_studentsubject
+CREATE SEQUENCE o_studentsubject_seq
+  START WITH 11
+  INCREMENT BY 1
+  NOCACHE;
+
+-- Sequence for o_studentcourse
+CREATE SEQUENCE o_studentcourse_seq
+  START WITH 11
+  INCREMENT BY 1
+  NOCACHE;
+
+-- Sequence for o_result
+CREATE SEQUENCE o_result_seq
+  START WITH 11
+  INCREMENT BY 1
+  NOCACHE;
+
+commit;
+

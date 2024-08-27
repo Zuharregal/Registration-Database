@@ -1,0 +1,123 @@
+Registration Tables Display
+
+-- Querying the Database to display tables
+
+-- Display the faculty  table 
+
+SELECT * FROM o_faculty;
+
+-- Display the department table
+
+SELECT * FROM o_department;
+
+-- Display the lecturer table
+
+SELECT lecturerid as "id",
+       l_name,
+       l_lastname as "surname",
+       subjectid as "subid",
+       deptid,
+       l_email
+FROM o_lecturer;
+
+-- Display the registration table
+
+SELECT regid, regdate,regstatus,regdate,regfees FROM o_registration;
+SELECT regid,payid,appid,studentid FROM o_registration;
+SELECT studentid, subjectid,courseid,facultyid, deptid FROM o_registration;
+SELECT r.studentid, r.subjectid, f.facultyid, c.coursename, d.dname
+FROM o_registration r, o_course c, o_department d, o_faculty f
+WHERE r.courseid = c.courseid
+AND r.deptid = d.deptid
+AND r.facultyid = f.facultyid;
+
+-- Display the course table
+
+	SELECT courseid as "COURSE ID",
+	coursename as "COURSE NAME",
+	deptid as "DEPARTMENT ID"
+	FROM o_course;
+
+-- Display the subject table
+
+	SELECT subjectid as "SUBJECT ID",
+	subjectname as "SUBJECT NAME",
+	subjectcode as "CODE"
+	FROM o_subject;
+
+-- Display the coursesubject table with courseid and subjectcode
+
+	SELECT
+    	cs.coursesubjectid AS "COURSESUBJECT ID",
+    	cs.courseid AS "COURSE ID",
+	c.coursename AS "COURSE NAME",
+    	cs.subjectid AS "SUBJECT ID",
+    	s.subjectcode AS "CODE"
+	FROM o_coursesubject cs
+           JOIN o_course c ON cs.courseid = c.courseid
+	JOIN o_subject s ON cs.subjectid = s.subjectid;
+
+--Display student info
+
+SELECT
+           studentid AS "STUDENT ID",
+           s_lastname AS "SURNAME",
+           s_gender AS "GENDER",
+           s_date_of_birth AS "DOB"
+           FROM o_student;
+SELECT
+           studentid AS "STUDENT ID",
+           s_phone AS "PHONE",
+           s_email AS "EMAIL"
+           FROM o_student;
+SELECT 
+	studentid AS "STUDENT ID",
+	s_city AS "CITY"
+	FROM o_student;
+SELECT 
+	studentid AS "STUDENT ID",
+	s_phone AS "PHONE",
+	s_emergency_contact "EMERGENCY CONTACT"
+	FROM o_student;
+
+SELECT 
+	studentid AS "STUDENT ID",
+	s_address AS "ADDRESS" 
+	FROM o_student;
+
+--Display student course and coursemark 
+
+          SELECT s.s_name, s.s_lastname, c.coursename,                   
+          r.course_mark
+         FROM o_result r
+         JOIN o_student s ON r.studentid = s.studentid
+        JOIN o_course c ON r.courseid = c.courseid;
+
+--Display the advisor table
+
+SELECT advtid AS “Student ID” , advname AS “City”, advsurname AS “Advisor Surname”, advemail AS “Advisor Email”
+FROM o_advisor;
+SELECT advphone AS “Advisor phone”, appid AS “Application ID”
+FROM o_advisor;
+
+--Display the o_advisingapp table
+
+SELECT appid, studentid, appdate, apptime, applocation
+From o_advisingapp;
+
+--Display the payment details
+
+SELECT payid, payamount, paydate, paymethod, paybranch
+FROM o_payment;
+
+--Display the results table
+
+SELECT * FROM o_result;
+
+--Display studentsubject table
+
+SELECT * FROM o_studentsubject;
+
+--Display studentcourse table
+
+SELECT * FROM o_studentcourse;

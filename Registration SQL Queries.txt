@@ -1,0 +1,191 @@
+Registration SQL Queries
+
+-- Creating anonymous block for o_registration
+
+SET SERVEROUTPUT ON
+DECLARE 
+    v_reg o_registration.regid%type;
+BEGIN
+    SELECT regid
+    INTO v_reg
+    FROM o_registration
+    WHERE studentid = 1;
+DBMS_OUTPUT.PUT_LINE('Registration id for student is ' || v_reg);
+END;
+/
+
+-- Inserting a new student record using the student_seq sequence
+
+INSERT INTO o_student (studentid, s_name, s_lastname, s_email, s_gender, s_date_of_birth, s_address, s_city, s_emergency_contact, s_phone)
+VALUES (o_student_seq.NEXTVAL, 'Zuhar', 'Regal', 'zuharregall@gmail.com', 'F', TO_DATE('2003-03-15', 'YYYY-MM-DD'), '123 Main St', 'Anytown', '0824182571', '08151228866');
+– Display the inserted information
+SELECT studentid, s_name, s_email from o_student WHERE studentid = 11;
+
+-- Declare a binded variable for faculty
+
+VARIABLE var_faculty VARCHAR2(50);
+BEGIN
+    SELECT fname
+    INTO :var_faculty
+    FROM o_faculty
+    WHERE facultyid = 7;
+END;
+/
+PRINT var_faculty;
+SELECT fname
+FROM o_faculty
+WHERE facultyid = :var_faculty;
+
+-- Generating a new faculty id using o_faculty_seq
+
+SET SERVEROUTPUT ON
+DECLARE v_fac_id NUMBER;
+BEGIN
+SELECT o_faculty_seq.NEXTVAL
+INTO v_fac_id 
+FROM DUAL; 
+DBMS_OUTPUT.PUT_LINE('The next faculty id is: ' || v_fac_id);
+END;
+/
+-- Creating nested block to calculate student account amount 
+
+SET SERVEROUTPUT ON
+SET VERIFY OFF
+DECLARE 
+  varstupay NUMBER(7,2);
+  v_payid NUMBER;
+BEGIN
+  v_payid := &insert_pay_id;
+  SELECT payamount
+  INTO varstupay
+  FROM o_payment
+  WHERE payid = v_payid;
+    DECLARE 
+    v_student_amount_calc NUMBER(7,2); 
+    BEGIN
+    v_student_amount_calc := varstupay - 5000; 
+    DBMS_OUTPUT.PUT_LINE('Student account amount is equal to: ' || v_student_amount_calc);
+    END;
+END;
+/
+
+-- Using condition in Registration Database
+
+SET SERVEROUTPUT ON
+DECLARE
+  v_paybranch VARCHAR2(50) := '&Input_branch'; 
+BEGIN
+  IF v_paybranch = 'Standard Bank' THEN
+    DBMS_OUTPUT.PUT_LINE('Amount will take 4 days to reflect');
+  ELSIF v_paybranch = 'FNB bank' THEN
+    DBMS_OUTPUT.PUT_LINE('Amount will take 24 hours to reflect');
+  ELSE
+    DBMS_OUTPUT.PUT_LINE('Branch not recognized');
+  END IF;
+END;
+/
+
+-- Using CASE condition in Registration Database
+
+SET SERVEROUTPUT ON 
+SET VERIFY OFF
+DECLARE
+  v_grade NUMBER := &INPUT_MARK; -- Use NUMBER data type for grade
+  appraisal VARCHAR2(20);
+BEGIN
+  appraisal := CASE
+    WHEN v_grade > 50 THEN 'PASS'
+    WHEN v_grade < 50 THEN 'FAIL'
+    ELSE 'No such grade'
+  END;
+  DBMS_OUTPUT.PUT_LINE('Grade: ' || v_grade || ' Appraisal: ' || appraisal);
+END;
+/
+
+-- Creating a record for a student
+
+SET SERVEROUTPUT ON
+DECLARE
+  TYPE STUDENT_REC IS RECORD (
+    V_NAME O_STUDENT.S_NAME%TYPE,
+    V_STUID O_STUDENT.STUDENTID%TYPE,
+    V_LNAME O_STUDENT.S_LASTNAME%TYPE
+  );
+
+  STU_DATA STUDENT_REC;
+
+BEGIN
+  SELECT S_NAME, STUDENTID, S_LASTNAME
+  INTO STU_DATA.V_NAME, STU_DATA.V_STUID, STU_DATA.V_LNAME
+  FROM O_STUDENT
+  WHERE STUDENTID = 9;
+
+  DBMS_OUTPUT.PUT_LINE('STUDENT INFO: ' || STU_DATA.V_NAME || ' ' || STU_DATA.V_STUID || ' ' || STU_DATA.V_LNAME);
+END;
+/
+
+-- Creating a cursor for Department
+
+SET SERVEROUTPUT ON
+DECLARE
+CURSOR DEPT_CURS IS 
+SELECT DNAME, FACULTYID
+FROM O_DEPARTMENT
+WHERE FACULTYID = 1;
+BEGIN
+FOR i IN DEPT_CURS
+LOOP
+DBMS_OUTPUT.PUT_LINE(i.DNAME || ' ' || i.FACULTYID);
+END LOOP;
+END;
+/
+
+-- Creating an exception for student
+
+SET SERVEROUTPUT ON
+DECLARE
+  var_student NUMBER := 15;
+BEGIN
+  UPDATE o_student
+  SET s_address = '48 Saint kilda road'
+  WHERE studentid = var_student;
+  IF SQL%NOTFOUND THEN
+  RAISE NO_DATA_FOUND;
+  END IF;
+  COMMIT; 
+EXCEPTION
+  WHEN NO_DATA_FOUND THEN
+ DBMS_OUTPUT.PUT_LINE('No such student exists');
+  WHEN OTHERS THEN
+    DBMS_OUTPUT.PUT_LINE(SQLERRM);
+END;
+/
+
+-- Create function for department
+
+CREATE OR REPLACE FUNCTION total_dept(par_deptid IN NUMBER) RETURN NUMBER IS
+  v_count_dept NUMBER;
+BEGIN
+  SELECT COUNT(*)
+  INTO v_count_dept
+  FROM o_department
+  WHERE deptid = par_deptid;
+  RETURN v_count_dept;
+END total_dept;
+/
+
+-- Create procedure for students
+
+CREATE OR REPLACE PROCEDURE stu(
+  p_studentid IN NUMBER,
+  p_s_name OUT VARCHAR2,
+  p_s_lname OUT VARCHAR2
+)
+AS
+BEGIN
+  SELECT s_name, s_lastname
+  INTO p_s_name, p_s_lname
+  FROM o_stu
+  WHERE student_id = p_studentid;
+END stu;
+/
